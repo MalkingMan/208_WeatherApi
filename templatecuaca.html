@@ -151,6 +151,7 @@
             regionEl.textContent = data.location.region;
             longitudeEl.textContent = data.location.lon;
             latitudeEl.textContent = data.location.lat;
+            localStorage.setItem('lokasiTerakhir', data.location.name);
         }
         
         // Fungsi utama untuk mengambil data dari API
