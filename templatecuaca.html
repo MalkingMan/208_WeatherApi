@@ -63,21 +63,39 @@
             <hr class="border-slate-200 my-6">
 
             <!-- Detail Tambahan -->
-            <div class="grid grid-cols-2 gap-4 text-sm">
-                <div class="flex items-center gap-3 bg-slate-100/70 p-3 rounded-lg">
-                    <!-- Ikon Kelembapan SVG -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-orange-500"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
-                    <div>
-                        <span class="text-slate-500">Kelembapan</span>
-                        <p id="humidity" class="font-semibold text-slate-800">-- %</p>
+            <div class="space-y-4 text-sm">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex items-center gap-3 bg-slate-100/70 p-3 rounded-lg">
+                        <!-- Ikon Kelembapan SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-orange-500"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+                        <div>
+                            <span class="text-slate-500">Kelembapan</span>
+                            <p id="humidity" class="font-semibold text-slate-800">-- %</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-100/70 p-3 rounded-lg">
+                        <!-- Ikon Angin SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-orange-500"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg>
+                        <div>
+                            <span class="text-slate-500">Angin</span>
+                            <p id="windSpeed" class="font-semibold text-slate-800">-- km/j</p>
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 bg-slate-100/70 p-3 rounded-lg">
-                    <!-- Ikon Angin SVG -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-orange-500"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg>
-                    <div>
-                        <span class="text-slate-500">Angin</span>
-                        <p id="windSpeed" class="font-semibold text-slate-800">-- km/j</p>
+
+                <!-- Detail Lokasi -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center bg-slate-100/70 p-3 rounded-lg">
+                        <span class="text-slate-500">Wilayah/Region</span>
+                        <p id="region" class="font-semibold text-slate-800">--</p>
+                    </div>
+                     <div class="flex justify-between items-center bg-slate-100/70 p-3 rounded-lg">
+                        <span class="text-slate-500">Longitude</span>
+                        <p id="longitude" class="font-semibold text-slate-800">--</p>
+                    </div>
+                     <div class="flex justify-between items-center bg-slate-100/70 p-3 rounded-lg">
+                        <span class="text-slate-500">Latitude</span>
+                        <p id="latitude" class="font-semibold text-slate-800">--</p>
                     </div>
                 </div>
             </div>
@@ -102,6 +120,9 @@
         const weatherConditionEl = document.getElementById('weatherCondition');
         const humidityEl = document.getElementById('humidity');
         const windSpeedEl = document.getElementById('windSpeed');
+        const regionEl = document.getElementById('region');
+        const longitudeEl = document.getElementById('longitude');
+        const latitudeEl = document.getElementById('latitude');
         
         // --- FUNGSI ---
         
@@ -127,6 +148,9 @@
             weatherConditionEl.textContent = data.current.condition.text;
             humidityEl.textContent = `${data.current.humidity} %`;
             windSpeedEl.textContent = `${data.current.wind_kph} km/j`;
+            regionEl.textContent = data.location.region;
+            longitudeEl.textContent = data.location.lon;
+            latitudeEl.textContent = data.location.lat;
         }
         
         // Fungsi utama untuk mengambil data dari API
