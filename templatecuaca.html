@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Cek Cuaca - WeatherAPI</title>
+    <!-- Menggunakan Tailwind CSS untuk styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Menggunakan Google Fonts untuk tampilan yang lebih baik -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-placeholder::placeholder {
+            color: #9ca3af;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-md bg-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 m-4">
+        
+        <!-- Bagian Input Lokasi -->
+        <h1 class="text-2xl font-bold mb-4 text-cyan-400">Pencarian Lokasi</h1>
+        <div class="flex flex-col sm:flex-row gap-3 mb-6">
+            <input type="text" id="locationInput" placeholder="Masukkan nama kota..." class="flex-grow bg-gray-700 text-white border-2 border-gray-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition duration-200 custom-placeholder">
+            <button id="setButton" class="bg-cyan-500 hover:bg-cyan-600 text-gray-900 font-bold py-2 px-6 rounded-lg transition duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                Set
+            </button>
+        </div>
+
+        <!-- Notifikasi Pesan -->
+        <div id="messageBox" class="hidden text-center text-red-400 mb-4 p-3 bg-red-900/50 rounded-lg"></div>
+
+        <!-- Bagian Informasi Cuaca -->
+        <div class="mb-6 p-4 bg-gray-700/50 rounded-lg">
+            <h2 class="text-xl font-semibold mb-3 border-b-2 border-gray-600 pb-2 text-cyan-300">Info Cuaca</h2>
+            <div class="space-y-2 text-gray-300">
+                <p><strong>Cuaca:</strong> <span id="weather" class="font-mono float-right">---</span></p>
+                <p><strong>Suhu:</strong> <span id="temperature" class="font-mono float-right">---</span></p>
+                <p><strong>Kelembapan:</strong> <span id="humidity" class="font-mono float-right">---</span></p>
+            </div>
+        </div>
+
+        <!-- Bagian Detail Lokasi -->
+        <div class="p-4 bg-gray-700/50 rounded-lg">
+            <h2 class="text-xl font-semibold mb-3 border-b-2 border-gray-600 pb-2 text-cyan-300">Detail Lokasi</h2>
+            <div class="space-y-2 text-gray-300">
+                <p><strong>Negara:</strong> <span id="country" class="font-mono float-right">---</span></p>
+                <p><strong>Provinsi:</strong> <span id="province" class="font-mono float-right">---</span></p>
+                <p><strong>Kota/Kecamatan:</strong> <span id="city" class="font-mono float-right">---</span></p>
+                <p><strong>Longitude:</strong> <span id="longitude" class="font-mono float-right">---</span></p>
+                <p><strong>Latitude:</strong> <span id="latitude" class="font-mono float-right">---</span></p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Menggunakan API Key dari kode yang Anda berikan
+        const API_KEY = 'd8ce264516a141a6aed21809250710';
+
+        // Mengambil elemen dari HTML
+        const locationInput = document.getElementById('locationInput');
+        const setButton = document.getElementById('setButton');
+        const messageBox = document.getElementById('messageBox');
+        
+        const weatherEl = document.getElementById('weather');
+        const temperatureEl = document.getElementById('temperature');
+        const humidityEl = document.getElementById('humidity');
+        
+        const countryEl = document.getElementById('country');
+        const provinceEl = document.getElementById('province');
+        const cityEl = document.getElementById('city');
+        const longitudeEl = document.getElementById('longitude');
+        const latitudeEl = document.getElementById('latitude');
+
+        // Fungsi untuk menampilkan pesan
+        function showMessage(message) {
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden');
+        }
+
+        // Fungsi untuk menyembunyikan pesan
+        function hideMessage() {
+            messageBox.classList.add('hidden');
+        }
+        
+        // Fungsi untuk mereset tampilan data
+        function resetData() {
+            weatherEl.textContent = '---';
+            temperatureEl.textContent = '---';
+            humidityEl.textContent = '---';
+            countryEl.textContent = '---';
+            provinceEl.textContent = '---';
+            cityEl.textContent = '---';
+            longitudeEl.textContent = '---';
+            latitudeEl.textContent = '---';
+        }
+
+        // Fungsi utama untuk mengambil data dari WeatherAPI.com
+        async function fetchData() {
+            const location = locationInput.value.trim();
+            
+            if (!location) {
+                showMessage('Kolom lokasi tidak boleh kosong.');
+                return;
+            }
+            
+            hideMessage();
+            weatherEl.textContent = 'Memuat...';
+            temperatureEl.textContent = 'Memuat...';
+            
+            // Membuat URL untuk WeatherAPI.com
+            const apiUrl = `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${location}&aqi=no`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                // Cek jika API mengembalikan error (misal: lokasi tidak ditemukan)
+                if (data.error) {
+                    throw new Error(data.error.message);
+                }
+                
+                // Menampilkan data ke halaman web
+                // Mapping data dari WeatherAPI ke elemen HTML
+                weatherEl.textContent = data.current.condition.text;
+                temperatureEl.textContent = `${data.current.temp_c} °C`;
+                humidityEl.textContent = `${data.current.humidity} %`;
+                
+                countryEl.textContent = data.location.country;
+                provinceEl.textContent = data.location.region;
+                cityEl.textContent = data.location.name;
+                longitudeEl.textContent = data.location.lon;
+                latitudeEl.textContent = data.location.lat;
+
+            } catch (error) {
+                resetData();
+                showMessage(error.message);
+                console.error("Terjadi kesalahan:", error);
+            }
+        }
+
+        // Menambahkan event listener ke tombol 'Set'
+        setButton.addEventListener('click', fetchData);
+        
+        // Memungkinkan pengguna menekan 'Enter' di kolom input
+        locationInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                fetchData();
+            }
+        });
+    </script>
+</body>
+</html>
+
